@@ -1,0 +1,6 @@
+interface:
+  display_name: "Circuit Draw"
+  short_description: "Two-agent drawing, review and circuit revision workflow"
+  default_prompt: "Use $draw-circuit to draw a circuit, have the review agent inspect it, then revise the findings."
+policy:
+  allow_implicit_invocation: true

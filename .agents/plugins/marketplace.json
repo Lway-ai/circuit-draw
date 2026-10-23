@@ -1,0 +1,10 @@
+{
+  "name": "circuit-tools",
+  "interface": { "displayName": "Circuit Tools" },
+  "plugins": [{
+    "name": "circuit-draw",
+    "source": { "source": "local", "path": "./output/plugin/circuit-draw" },
+    "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+    "category": "Productivity"
+  }]
+}

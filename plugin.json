@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "circuit-draw",
+  "version": "0.1.4",
+  "description": "Editable analog/RF schematics using drawing and review agents with a review-before-revision workflow.",
+  "author": {
+    "name": "Wanglei"
+  },
+  "license": "MIT",
+  "keywords": [
+    "circuit",
+    "schematic",
+    "analog",
+    "rf",
+    "two-agent",
+    "svg",
+    "netlist"
+  ]
+}

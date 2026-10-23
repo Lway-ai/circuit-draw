@@ -1,0 +1,36 @@
+{
+  "name": "schematic-canvas",
+  "version": "1.1.5",
+  "description": "A dependency-free browser app for drawing analog/RF circuit schematics and exporting SVG/PNG/JPG/PDF plus SPICE and Spectre netlists.",
+  "license": "MIT",
+  "author": "Schematic Canvas contributors",
+  "homepage": "https://github.com/Lway-ai/circuit-draw#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lway-ai/circuit-draw.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Lway-ai/circuit-draw/issues"
+  },
+  "keywords": [
+    "circuit",
+    "schematic",
+    "analog",
+    "rf",
+    "eda",
+    "spice",
+    "spectre",
+    "netlist",
+    "svg",
+    "drawing",
+    "canvas"
+  ],
+  "scripts": {
+    "start": "python serve.py",
+    "test": "node --test netlist.test.js tests/regressions.test.js",
+    "mcp": "node server/mcp-server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "circuit-draw",
+  "version": "0.1.4",
+  "description": "Editable analog/RF schematics with a drawing agent followed by an independent review agent and revision loop.",
+  "author": {
+    "name": "Wanglei"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "requires_local_executor": true,
+  "interface": {
+    "displayName": "Circuit Draw",
+    "shortDescription": "Draw, review and revise editable circuit schematics.",
+    "longDescription": "Two-agent circuit workflow: drawing produces an editable JSON and SVG, independent review checks topology and visible artwork, then drawing revises and review verifies the final result. Local MCP tools share the browser editor's component library and netlist engine.",
+    "developerName": "Wanglei",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "defaultPrompt": [
+      "绘制一个五管 OTA，让校验 agent review 后再修改。",
+      "Review this circuit project and revise it using the two-agent workflow."
+    ],
+    "brandColor": "#197084"
+  }
+}

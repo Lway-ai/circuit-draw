@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>Schematic Canvas — Analog Circuit Drawing Board</title>
+<link rel="stylesheet" href="style.css?v=31">
+</head>
+<body>
+
+<!-- ============ Top header ============ -->
+<header id="topbar">
+  <a class="brand" href="#" title="Back to start">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" fill="#111"/><path d="M6 14 L10 14 L12 8 L14 16 L15 14 L18 14" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    <h1>Schematic Canvas</h1>
+  </a>
+  <span class="divider"></span>
+  <input id="circuit-name" class="circuit-name" value="New Circuit" title="Circuit name" spellcheck="false">
+  <span class="cell-path">/Main</span>
+  <nav class="menu-bar">
+    <div class="menu" id="menu-file">
+      <button class="menu-btn">File ▾</button>
+      <div class="menu-panel">
+        <button data-act="new">New Project</button>
+        <button data-act="open">Open Project…</button>
+        <button data-act="save-json">Save Project</button>
+        <button data-act="restore-autosave" disabled>Restore Recovery Copy</button>
+        <hr>
+        <div class="menu-label">Templates</div>
+        <button data-act="tpl-ota5">5-Transistor OTA</button>
+        <hr>
+        <div class="menu-label">Export</div>
+        <button data-act="export-svg">Export SVG</button>
+        <button data-act="export-png">Export PNG</button>
+        <button data-act="export-jpg">Export JPG</button>
+        <button data-act="export-pdf">Export PDF</button>
+        <button data-act="export-spice">Export SPICE Netlist</button>
+        <button data-act="export-spectre">Export Spectre Netlist</button>
+      </div>
+    </div>
+    <div class="menu" id="menu-edit">
+      <button class="menu-btn">Edit ▾</button>
+      <div class="menu-panel">
+        <button data-act="undo">Undo <span class="kbd">Ctrl+Z</span></button>
+        <button data-act="redo">Redo <span class="kbd">Ctrl+Shift+Z</span></button>
+        <hr>
+        <button data-act="delete">Delete <span class="kbd">Del</span></button>
+        <button data-act="duplicate">Duplicate <span class="kbd">Ctrl+D</span></button>
+        <hr>
+        <button data-act="rotate">Rotate 90° <span class="kbd">R</span></button>
+        <button data-act="mirror-x">Mirror left/right <span class="kbd">Shift+R</span></button>
+        <button data-act="mirror-y">Mirror top/bottom <span class="kbd">Ctrl+R</span></button>
+        <hr>
+        <button data-act="clear">Clear Drawing</button>
+      </div>
+    </div>
+    <div class="menu" id="menu-netlist">
+      <button class="menu-btn">Netlist ▾</button>
+      <div class="menu-panel">
+        <button data-act="show-netlist">View Netlist…</button>
+        <button data-act="instance-table">Instance Table…</button>
+        <hr>
+        <button data-act="check-report">Check Report…</button>
+      </div>
+    </div>
+  </nav>
+  <button id="btn-check-save" class="accent-btn">✓ Check and Save</button>
+  <span class="spacer"></span>
+  <span id="save-status" class="save-status"></span>
+  <div class="menu" id="menu-help">
+    <button class="menu-btn">Help ▾</button>
+    <div class="menu-panel right">
+      <div class="help-block">
+        <b>Keyboard</b>
+        <div class="help-row"><span>Select</span><span class="kbd">V / Esc</span></div>
+        <div class="help-row"><span>Insert component</span><span class="kbd">I</span></div>
+        <div class="help-row"><span>Wire</span><span class="kbd">W</span></div>
+        <div class="help-row"><span>Finish wire</span><span>click pin/wire · shift-click · right-click</span></div>
+        <div class="help-row"><span>Text</span><span class="kbd">T</span></div>
+        <div class="help-row"><span>Rotate / Mirror</span><span class="kbd">R · Shift+R · Ctrl+R</span></div>
+        <div class="help-row"><span>Orthogonal wire</span><span class="kbd">F3</span></div>
+        <div class="help-row"><span>Fit document</span><span class="kbd">F</span></div>
+        <div class="help-row"><span>Undo / Redo</span><span class="kbd">Ctrl+Z · Ctrl+Shift+Z</span></div>
+        <b style="margin-top:8px">Mouse</b>
+        <div class="help-row"><span>Pan</span><span>Space drag / middle drag</span></div>
+        <div class="help-row"><span>Zoom</span><span>Wheel</span></div>
+        <div class="help-row"><span>Edit label</span><span>Double click</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ Drawing tools ============ -->
+<div id="toolbar">
+  <button class="tool active" data-tool="select" id="tool-select" title="Select (V, Esc)">
+    <svg width="14" height="14" viewBox="0 0 16 16"><path d="M3 1 L3 13 L6.5 10 L9 15 L11 14 L8.5 9 L13 9 Z" fill="currentColor"/></svg>Select
+  </button>
+  <button class="tool" data-tool="insert" id="tool-insert" title="Insert component (I)">
+    <svg width="14" height="14" viewBox="0 0 16 16"><rect x="7" y="2" width="2" height="12" fill="currentColor"/><rect x="2" y="7" width="12" height="2" fill="currentColor"/></svg>Insert
+  </button>
+  <button class="tool" data-tool="wire" id="tool-wire" title="Electrical wire (W) — click one port, release, then click the second port">
+    <svg width="14" height="14" viewBox="0 0 16 16"><path d="M2 12 L6 12 L6 4 L14 4" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="2" cy="12" r="1.8" fill="currentColor"/><circle cx="14" cy="4" r="1.8" fill="currentColor"/></svg>Wire
+  </button>
+  <button class="tool" data-tool="text" id="tool-text" title="Text (T)">
+    <svg width="14" height="14" viewBox="0 0 16 16"><path d="M2 3 H14 M8 3 V13 M5.5 13 H10.5" stroke="currentColor" stroke-width="1.7" fill="none"/></svg>Text
+  </button>
+  <button class="tool" data-tool="arrow" id="tool-arrow" title="Arrow">
+    <svg width="14" height="14" viewBox="0 0 16 16"><path d="M2 13 L13 3 M13 3 L7 3.5 M13 3 L12.5 9" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>Arrow
+  </button>
+  <button class="tool" data-tool="rect" id="tool-rect" title="Rectangle">
+    <svg width="14" height="14" viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="9" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>Rect
+  </button>
+  <button class="tool" data-tool="circle" id="tool-circle" title="Circle">
+    <svg width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>Circle
+  </button>
+  <button class="tool" data-tool="style" id="tool-style" title="Style">
+    <svg width="14" height="14" viewBox="0 0 16 16"><path d="M3 5 H13 M3 8 H13 M3 11 H9" stroke="currentColor" stroke-width="1.7"/></svg>Style
+  </button>
+  <span class="flex-spacer"></span>
+  <div id="style-pop" class="style-pop hidden">
+    <label>Wire width
+      <select id="style-lw"><option value="3.2">Normal</option><option value="4.8">Bold</option></select>
+    </label>
+    <label>Grid dots
+      <input type="checkbox" id="style-grid" checked>
+    </label>
+    <label>Label size
+      <select id="style-fontsize"><option value="24">S</option><option value="30" selected>M</option><option value="38">L</option></select>
+    </label>
+  </div>
+</div>
+
+<!-- ============ Main ============ -->
+<div id="main">
+  <!-- Library panel -->
+  <aside id="library">
+    <div class="lib-head">
+      <button class="lib-filter active" data-filter="all">All devices <span class="count" id="count-all"></span></button>
+    </div>
+    <div id="lib-groups"></div>
+    <div class="lib-footer">
+      <button id="btn-insert" class="insert-btn">Insert <span class="kbd kbd-dark">I</span></button>
+    </div>
+  </aside>
+
+  <!-- Canvas -->
+  <div id="canvas-wrap">
+    <svg id="canvas" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
+          <circle cx="0" cy="0" r="1.4" fill="#c4c7c9"></circle>
+        </pattern>
+      </defs>
+      <g id="viewport">
+        <rect id="grid-rect" fill="url(#dots)"></rect>
+        <g id="g-wires"></g>
+        <g id="g-devices"></g>
+        <g id="g-annotations"></g>
+        <g id="g-texts"></g>
+        <g id="g-nodes"></g>
+        <g id="g-overlay"></g>
+      </g>
+    </svg>
+
+    <div id="empty-hint">
+      <b>Start a schematic</b>
+      <span>Press <span class="kbd">I</span> to insert a component or <span class="kbd">W</span> to wire.</span>
+    </div>
+
+    <!-- status bar -->
+    <div id="statusbar">
+      <span id="status-left">Select</span>
+      <span class="flex-spacer"></span>
+      <button id="btn-grid" class="icon-btn" title="Hide/show background dots">▦</button>
+      <button id="btn-zoom-out" class="icon-btn" title="Zoom out">−</button>
+      <span id="zoom-label">100%</span>
+      <button id="btn-zoom-in" class="icon-btn" title="Zoom in">+</button>
+      <button id="btn-fit" class="icon-btn wide" title="Fit document (F)">⤢ Fit</button>
+      <span id="build-label" class="build-label" title="Loaded build version"></span>
+    </div>
+  </div>
+
+  <!-- Properties panel -->
+  <aside id="props">
+    <div class="props-head">Properties</div>
+    <div id="props-body" class="props-body"><div class="props-empty">Nothing selected</div></div>
+  </aside>
+</div>
+
+<!-- ============ Insert dialog ============ -->
+<div id="insert-dialog" class="modal hidden">
+  <div class="dialog insert-dialog">
+    <div class="dialog-title">PLACE DEVICE<button class="dialog-x" data-close>✕</button></div>
+    <div class="dialog-sub">Insert Component</div>
+    <div class="insert-body">
+      <div class="insert-list">
+        <input id="insert-search" placeholder="Search component" spellcheck="false">
+        <div id="insert-list"></div>
+      </div>
+      <div class="insert-preview" id="insert-preview">
+        <div class="preview-symbol" id="preview-symbol"></div>
+        <div class="preview-name" id="preview-name"></div>
+      </div>
+    </div>
+    <div class="dialog-hint">Type to search · ↑↓ choose · <span class="kbd">Enter</span> place · <span class="kbd">Esc</span> cancel</div>
+    <div class="dialog-actions">
+      <button data-close class="btn">Cancel</button>
+      <button id="insert-place" class="btn accent">Insert</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Prompt dialog (app-level, replaces window.prompt) ============ -->
+<div id="prompt-dialog" class="modal hidden">
+  <div class="dialog" style="width:380px">
+    <div class="dialog-title" id="prompt-dialog-title">Prompt
+      <button class="dialog-x" id="prompt-dialog-close">✕</button>
+    </div>
+    <div class="dialog-sub" id="prompt-dialog-sub">Enter value</div>
+    <input type="text" id="prompt-dialog-input" spellcheck="false" autocomplete="off">
+    <div class="dialog-hint">Enter to confirm · Esc to cancel</div>
+    <div class="dialog-actions">
+      <button id="prompt-dialog-cancel" class="btn">Cancel</button>
+      <button id="prompt-dialog-ok" class="btn accent">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Generic text dialog ============ -->
+<div id="text-dialog" class="modal hidden">
+  <div class="dialog" style="width:620px">
+    <div class="dialog-title" id="text-dialog-title">Netlist</div>
+    <textarea id="text-dialog-body" readonly spellcheck="false"></textarea>
+    <div class="dialog-actions">
+      <button data-close class="btn">Close</button>
+      <button id="text-dialog-copy" class="btn accent">Copy</button>
+      <button id="text-dialog-download" class="btn accent">Download</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="file-input" accept=".json" style="display:none">
+
+<script src="circuit-core.js?v=31"></script>
+<script src="components.js?v=31"></script>
+<script src="templates.js?v=31"></script>
+<script src="netlist.js?v=31"></script>
+<script src="exporter.js?v=31"></script>
+<script src="app.js?v=31"></script>
+</body>
+</html>

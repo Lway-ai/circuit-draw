@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "circuit_draw": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${PLUGIN_ROOT}/server/mcp-server.js"],
+      "cwd": "${PLUGIN_ROOT}"
+    }
+  }
+}

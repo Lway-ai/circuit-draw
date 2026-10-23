@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "circuit_draw": {
+      "command": "node",
+      "args": ["server/mcp-server.js"],
+      "cwd": "."
+    }
+  }
+}

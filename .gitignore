@@ -1,0 +1,22 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+
+# Python (serve.py helper)
+__pycache__/
+*.pyc
+
+# Agent / project-local tooling (not part of the published source)
+.workbuddy/
+
+# Third-party source binaries & scraped artifacts (not redistributed)
+*.vss
+verify_ota.png.jpg
+_site_extra_chips.json
+
+# Generated reviews, screenshots, packages and operation backups
+output/
+*.bak
+*.tmp
+.playwright-cli/
