@@ -1,6 +1,6 @@
 {
   "name": "circuit-draw",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Editable analog/RF schematics with a drawing agent followed by an independent review agent and revision loop.",
   "author": {
     "name": "Wanglei"

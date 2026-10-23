@@ -11,7 +11,7 @@ function includeTree(dir) {
   }
 }
 files.push(".zcode-plugin/plugin.json");
-for (const dir of ["server", "skills", "scripts", "tests"]) includeTree(dir);
+for (const dir of ["server", "skills", "scripts", "tests", "docs"]) includeTree(dir);
 for (const file of files) {
   const dest = path.join(target, file);
   fs.mkdirSync(path.dirname(dest), { recursive: true });

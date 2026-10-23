@@ -18,3 +18,5 @@
 - Electrical lead strokes (inside the artwork's scale(2)) follow wireWidth/2 in editor, placement ghosts and all exports. Preserve distinct thicker device-body strokes. Electrical wires use butt caps like the leads to avoid a rounded bump at a connection.
 - When browser-side JavaScript changes, increment the `?v=` query in `index.html` to prevent stale cached behavior.
 - Public source snapshot target: Lway-ai/circuit-draw. Exclude original Git history, local outputs, backups, scraped artifacts and Visio binaries. MIT artwork permission was confirmed by the maintainer on 2026-10-23; retain Analog Canvas attribution and final README acknowledgements.
+
+- v_noise/i_noise follow Razavi Analog CMOS 2e Ch7 official slides 22/26. Sources has editable labels and two pins; exports are explicit placeholders, not simulator noise models. See docs/noise-symbols.md.

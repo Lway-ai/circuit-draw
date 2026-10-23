@@ -32,7 +32,7 @@ const App = (() => {
   // Bump this together with the ?v=NN cache-busting query in index.html.
   // Shown in the status bar so it is always obvious which build the browser
   // is actually running — otherwise a stale tab looks identical to broken code.
-  const APP_VERSION = "v31";
+  const APP_VERSION = "v32";
 
   // ---- DOM refs ----
   let canvas, viewport, gridRect, gWires, gDevices, gAnnos, gTexts, gNodes, gOverlay;

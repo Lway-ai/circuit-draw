@@ -10,6 +10,36 @@ const { callTool } = require("../server/mcp-server.js");
 const C = R.Core;
 const work = () => fs.mkdtempSync(path.join(os.tmpdir(), "circuit-draw-test-"));
 
+test("noise sources retain rotated electrical pins, editable labels and explicit netlist model warnings", async () => {
+  const listed = await callTool("list_components", { query: "noise" });
+  assert.deepEqual(Array.from(listed, d => d.id), ["v_noise", "i_noise"]);
+  for (const type of ["v_noise", "i_noise"]) {
+    for (const rot of [0, 90, 180, 270]) {
+      for (const mirrorX of [false, true]) {
+        const source = { id: "noise", type, x: 0, y: 0, rot, mirrorX,
+          params: { display: type === "v_noise" ? "v_{n,in}" : "i_{n,d}" } };
+        const pins = R.library.byId(type).pins.map(pin => C.transformPin(pin, source));
+        const p = R.normalize({ devices: [source, ...pins.map((pin,i) => ({ id: "port"+i, type: "pin", x: pin.x * 5 - 20, y: pin.y * 5, params: { net: "noise"+i } }))],
+          wires: pins.map(pin => ({ points: [{ x: pin.x, y: pin.y }, { x: pin.x * 5, y: pin.y * 5 }] })) });
+        const n = R.netlist(p), nets = n.getPinNets(p.devices[0], n.buildNetGraph());
+        assert.equal(nets["+"], "noise0");
+        assert.equal(nets["-"], "noise1");
+        assert.ok(!n.checkReport().includes(p.devices[0].label + ".+ — floating"));
+        assert.ok(!n.checkReport().includes(p.devices[0].label + ".- — floating"));
+        for (const output of [n.generateSPICE(), n.generateSpectre()]) {
+          assert.ok(output.includes("noise symbol only; add a simulator-specific noise model"));
+          assert.ok(!output.split("\n").some(line => line.startsWith(p.devices[0].label + " ")));
+        }
+        assert.ok(n.checkReport().includes("noise symbol only"));
+        const svg = R.renderSVG(p);
+        assert.ok(svg.includes('baseline-shift="sub"'));
+        assert.ok(svg.includes(type === "v_noise" ? "n,in" : "n,d"));
+        assert.equal(R.normalize(JSON.parse(JSON.stringify(p))).devices[0].params.display, source.params.display);
+      }
+    }
+  }
+});
+
 test("variable-defined controlled sources have only output terminals and export named control nodes", () => {
   for (const type of ["gm", "vccs", "vcvs"]) {
     const def = R.library.byId(type);

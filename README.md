@@ -1,5 +1,11 @@
 # Circuit Draw
 
+## Noise-source symbols
+
+**Sources → V Noise / I Noise** adds Razavi-style voltage/current noise sources,
+with editable `v_n` / `i_n` labels. See [reference and export behavior](docs/noise-symbols.md).
+These are diagram symbols; simulation requires a simulator-specific noise model.
+
 ## Small-signal circuits
 
 Small Signal offers two-terminal `gm · vgs`, VCCS and VCVS sources plus ro, rπ, Cgs and Cgd. Only output terminals are drawn; the right-side `display` notation defines the controlling variable. Edit display as `g_m v_gs`, `g_mb v_bs`, or `A_v v_ctrl`, with SVG subscripts. gm current flows D to S, VCCS current out+ to out-, and VCVS output voltage follows its internal polarity marks.

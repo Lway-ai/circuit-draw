@@ -259,6 +259,9 @@ const Netlist = (() => {
         return `${lbl} ${pinNets["+"] || "?"} ${pinNets["-"] || "?"} ${p.type || "dc"} ${p.value || "1V"}`;
       case "i_src":
         return `${lbl} ${pinNets["+"] || "?"} ${pinNets["-"] || "?"} ${p.type || "dc"} ${p.value || "10u"}`;
+      case "v_noise":
+      case "i_noise":
+        return `* ${lbl} (${def.name}) ${pinNets["+"] || "?"} ${pinNets["-"] || "?"}: noise symbol only; add a simulator-specific noise model`;
       case "gm":
       case "vccs":
       case "vcvs": {
@@ -327,6 +330,9 @@ const Netlist = (() => {
         return `${lbl} (${nets}) vsource type=${p.type || "dc"} dc=${p.value || "1V"}`;
       case "i_src":
         return `${lbl} (${nets}) isource type=${p.type || "dc"} dc=${p.value || "10u"}`;
+      case "v_noise":
+      case "i_noise":
+        return `// ${lbl} (${def.name}) ${nets}: noise symbol only; add a simulator-specific noise model`;
       case "gm":
       case "vccs":
       case "vcvs": {
@@ -374,6 +380,9 @@ const Netlist = (() => {
 
     infos.push(`Devices: ${s.devices.length}`);
     infos.push(`Wires: ${s.wires.length}`);
+    for (const d of s.devices.filter(d => ["v_noise", "i_noise"].includes(d.type))) {
+      warnings.push(`${d.label}: noise symbol only; add a simulator-specific noise model before simulation. The exported comment does not model the source.`);
+    }
     for (const d of s.devices.filter(d => ["gm", "vccs", "vcvs"].includes(d.type))) {
       const nodes = controlledNodes(d, getPinNets(d, graph));
       if (!nodes) warnings.push(`${d.label}: control variable has no valid node binding; netlist contains an explicit placeholder comment.`);

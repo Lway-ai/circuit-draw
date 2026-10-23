@@ -5,6 +5,12 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.6] — 2026-10-23
+
+- Add V Noise / I Noise symbols following Razavi Analog CMOS 2e Chapter 7 official slides 22/26, with editable subscript labels and two connectable pins.
+- Export explicit SPICE/Spectre placeholder comments and model warnings for noise symbols; no random waveform or simulator noise model is implied.
+- Include source-reference documentation in plugin packages. Plugin version 0.1.5, browser build v32.
+
 ## Open-source packaging — 2026-10-23
 
 - Publish the editor, plugin manifests, MCP server, CLI, tests and skill as a clean source snapshot.

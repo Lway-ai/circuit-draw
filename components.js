@@ -254,6 +254,24 @@ const ComponentLib = (() => {
     pins: [{ name: "+", x: 0, y: -40 }, { name: "-", x: 0, y: 40 }],
     draw(g) { rawSVG(g, SVG_I_SRC); } });
 
+  // Original SVG primitives following Razavi, Analog CMOS 2e, Ch. 7
+  // official slides 22 and 26: blank voltage circle, external polarity;
+  // current circle with a downward reference arrow. These are notation only.
+  function drawNoise(g, current) {
+    const marks = current
+      ? '<path d="M 0 -7 V 3" stroke-width="1.5"/><polygon points="0,8 -3.5,1 3.5,1" fill="#000" stroke="none"/>'
+      : '<path d="M 13 -15 H 19 M 16 -18 V -12 M 13 15 H 19" stroke-width="1.5"/>';
+    rawSVG(g, `<g fill="none" stroke="#000" stroke-linejoin="miter"><path d="M 0 -20 V -11 M 0 11 V 20" stroke-width="1.6"/><circle cx="0" cy="0" r="11" stroke-width="1.5"/>${marks}</g>`);
+  }
+  defs.push({ id: "v_noise", name: "V Noise", category: "Sources", prefix: "V",
+    defaultParams: { display: "v_n" },
+    pins: [{ name: "+", x: 0, y: -40 }, { name: "-", x: 0, y: 40 }],
+    draw(g) { drawNoise(g, false); } });
+  defs.push({ id: "i_noise", name: "I Noise", category: "Sources", prefix: "I",
+    defaultParams: { display: "i_n" },
+    pins: [{ name: "+", x: 0, y: -40 }, { name: "-", x: 0, y: 40 }],
+    draw(g) { drawNoise(g, true); } });
+
   // --- Small-signal equivalents: original artwork, not website extracts. ---
   function drawDependent(g, voltage) {
     const output = voltage
@@ -401,6 +419,8 @@ const ComponentLib = (() => {
   // ============================================================
 
   const LABEL_SPECS = {
+    v_noise:   { off: [44, -20], anchor: "start", text: "display" },
+    i_noise:   { off: [32, -20], anchor: "start", text: "display" },
     gm:        { off: [32, 6], anchor: "start", text: "display" },
     vccs:      { off: [32, 6], anchor: "start", text: "display" },
     vcvs:      { off: [32, 6], anchor: "start", text: "display" },
